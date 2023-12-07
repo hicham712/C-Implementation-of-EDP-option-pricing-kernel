@@ -129,9 +129,11 @@
   <ItemGroup>
     <ClCompile Include="Asset.cpp" />
     <ClCompile Include="CPP_ENSAE.cpp" />
+    <ClCompile Include="Pricer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Asset.h" />
+    <ClInclude Include="Pricer.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
