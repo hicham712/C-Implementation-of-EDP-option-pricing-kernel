@@ -16,6 +16,7 @@ public:
 	double get_vol();
 	double get_spot();
 	double get_div_yield();
+	void summary();
 
 };
 
