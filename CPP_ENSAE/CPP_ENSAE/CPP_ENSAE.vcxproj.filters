@@ -18,12 +18,12 @@
     <ClCompile Include="CPP_ENSAE.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
-    <ClCompile Include="Actif.cpp">
+    <ClCompile Include="Asset.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Actif.h">
+    <ClInclude Include="Asset.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
   </ItemGroup>

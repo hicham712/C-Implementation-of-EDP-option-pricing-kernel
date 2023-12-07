@@ -1,4 +1,5 @@
 #include "Asset.h"
+#include <iostream>
 using namespace std;
 
 Asset::Asset()
@@ -7,6 +8,7 @@ Asset::Asset()
 	rate = 0.05;
 	spot = 100;
 	div_yield = 0;
+	cout << "The Asset object has been created" << endl;
 }
 
 Asset::Asset(double vol, double rate, double spot, double div_yield)
@@ -15,6 +17,7 @@ Asset::Asset(double vol, double rate, double spot, double div_yield)
 	this->rate = rate;
 	this->spot = spot;
 	this->div_yield = div_yield;
+	cout << "The Asset object has been created" << endl;
 }
 
 Asset::Asset(const Asset& myactif)
@@ -23,28 +26,34 @@ Asset::Asset(const Asset& myactif)
 	this->rate = myactif.rate;
 	this->spot = myactif.spot;
 	this->div_yield = myactif.div_yield;
+	cout << "The Asset object has been created by copy" << endl;
 }
 
 Asset::~Asset()
 {
+	cout << "The Asset object has been deleted" << endl;
 }
 
 double Asset::get_rate()
 {
-	std::cout<< "Myrate is: " <<rate<< endl;
+	cout<< "Myrate is: " <<rate<< endl;
+	return rate;
 }
 
 double Asset::get_vol()
 {
-	return 0.0;
+	cout << "Myrate is: " << vol << endl;
+	return vol;
 }
 
 double Asset::get_spot()
 {
-	return 0.0;
+	cout << "Myrate is: " << spot << endl;
+	return spot;
 }
 
 double Asset::get_div_yield()
 {
-	return 0.0;
+	cout << "Myrate is: " << div_yield << endl;
+	return div_yield;
 }
