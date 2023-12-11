@@ -36,24 +36,24 @@ Asset::~Asset()
 	cout << "The Asset object has been deleted" << endl;
 }
 
-double Asset::get_rate()
+double Asset::get_rate() const
 {
 
 	return rate;
 }
 
-double Asset::get_vol()
+double Asset::get_vol() const
 {
 
 	return vol;
 }
 
-double Asset::get_spot()
+double Asset::get_spot() const
 {
 	return spot;
 }
 
-double Asset::get_div_yield()
+double Asset::get_div_yield() const
 {
 
 	return div_yield;
