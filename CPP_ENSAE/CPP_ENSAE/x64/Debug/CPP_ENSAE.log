@@ -1,4 +1,7 @@
-﻿  CPP_ENSAE.cpp
-  Pricer.cpp
+﻿  Asset.cpp
+  Call.cpp
+  CPP_ENSAE.cpp
+  Option.cpp
+  Put.cpp
   Génération de code en cours...
-  CPP_ENSAE.vcxproj -> C:\Users\Hicham\Desktop\ENSAE\API_Thomas_Hicham\CppEDP\CPP_ENSAE\x64\Debug\CPP_ENSAE.exe
+  CPP_ENSAE.vcxproj -> C:\Users\thoma\Desktop\CPP_ENSAE_thomas\x64\Debug\CPP_ENSAE.exe
