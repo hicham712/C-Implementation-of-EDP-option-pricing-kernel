@@ -69,7 +69,7 @@ int main()
     int Ntime = 1000;
     int Bounds = 2;
     double vol = 0.2;
-    double rates = 0.02;
+    double rates = 0.0;
     double maturity = 1;
     double spotPrice = 105;
     double strike = 100;

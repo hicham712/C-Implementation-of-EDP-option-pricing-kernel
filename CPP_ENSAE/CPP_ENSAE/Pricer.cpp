@@ -68,8 +68,11 @@ void Pricer::explicit_scheme(const Asset& myAsset,const Option& opt)
 {
 	double dt = opt.get_maturity() / Ntime;
 	double dx = 2 * static_cast<double>(Bounds) / static_cast<double>(Nspace);
-	double p = pow(myAsset.get_vol(), 2) * dt / 2 / pow(dx, 2) * (1 - dx / 2);
-	double q = pow(myAsset.get_vol(), 2) * dt / 2 / pow(dx, 2) * (1 + dx / 2);
+	double sig2 = pow(myAsset.get_vol(), 2);
+	double drift = myAsset.get_rate() - sig2 / 2;
+	double pu = dt * (0.5 * sig2 / pow(dx, 2) + drift * 0.5 / dx);
+	double pm = 1 - dt * sig2 / pow(dx, 2) - myAsset.get_rate() * dt;
+	double pd = dt * (sig2 * 0.5 / pow(dx, 2) - drift*0.5/dx);
 	set_initial_conditions(opt, myAsset);
 	double time_to_mat = opt.get_maturity();
 
@@ -77,7 +80,7 @@ void Pricer::explicit_scheme(const Asset& myAsset,const Option& opt)
 	{
 		for (int j = Nspace - 1;j > 1;j--)
 		{
-			u_current[j] = p*u_previous[j+1]+q*u_previous[j-1]+(1-p-q)*u_previous[j];
+			u_current[j] = pu* u_previous[j + 1] + pd * u_previous[j - 1] + pm* u_previous[j];
 			set_boundaries(myAsset.get_spot(),opt,j,time_to_mat);
 		}
 		u_previous = u_current;
