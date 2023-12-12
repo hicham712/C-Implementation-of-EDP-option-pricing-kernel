@@ -22,6 +22,9 @@ Pricer::Pricer(int Ntime, int Nspace, int Bounds)
 
 Pricer::Pricer(const Pricer& mypricer)
 {
+	this->Ntime = mypricer.Ntime;
+	this->Nspace = mypricer.Nspace;
+	this->Bounds = mypricer.Bounds;
 	cout << "The Pricer object has been created by copy" << endl;
 }
 
@@ -59,7 +62,7 @@ void Pricer::set_initial_conditions(const Option& opt,const Asset& myAsset) {
 }
 void Pricer::set_boundaries(double cur_spot, const Option& opt,int j,double time_to_mat) {
 	u_current[0] =0.0;
-	u_current[Nspace] = opt.payoff(cur_spot*exp(time_to_mat));
+	u_current[Nspace] = opt.payoff(cur_spot*exp(Bounds));
 }
 void Pricer::explicit_scheme(const Asset& myAsset,const Option& opt)
 {
@@ -70,11 +73,11 @@ void Pricer::explicit_scheme(const Asset& myAsset,const Option& opt)
 	set_initial_conditions(opt, myAsset);
 	double time_to_mat = opt.get_maturity();
 
-	for (int i = 0;i < Ntime - 1;i++)
+	for (int i = 0;i < Ntime;i++)
 	{
 		for (int j = Nspace - 1;j > 1;j--)
 		{
-			u_current[j] = p*u_previous[j-1]+q*u_previous[j]+(1-p-q)*u_previous[j+1];
+			u_current[j] = p*u_previous[j+1]+q*u_previous[j-1]+(1-p-q)*u_previous[j];
 			set_boundaries(myAsset.get_spot(),opt,j,time_to_mat);
 		}
 		u_previous = u_current;

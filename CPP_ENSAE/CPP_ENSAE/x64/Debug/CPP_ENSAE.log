@@ -1,2 +1,12 @@
-﻿  Pricer.cpp
-  CPP_ENSAE.vcxproj -> C:\Users\Hicham\Desktop\ENSAE\API_Thomas_Hicham\CppEDP\CPP_ENSAE\x64\Debug\CPP_ENSAE.exe
+﻿  CPP_ENSAE.cpp
+C:\Users\thoma\Desktop\GitHub\CPP_ENSAE\CPP_ENSAE\CPP_ENSAE.cpp(44,65): warning C4244: 'argument' : conversion de 'double' en '_Ty', perte possible de données
+          with
+          [
+              _Ty=float
+          ]
+C:\Users\thoma\Desktop\GitHub\CPP_ENSAE\CPP_ENSAE\CPP_ENSAE.cpp(49,65): warning C4244: 'argument' : conversion de 'double' en '_Ty', perte possible de données
+          with
+          [
+              _Ty=float
+          ]
+  CPP_ENSAE.vcxproj -> C:\Users\thoma\Desktop\GitHub\CPP_ENSAE\x64\Debug\CPP_ENSAE.exe
