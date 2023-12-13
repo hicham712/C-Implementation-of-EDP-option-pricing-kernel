@@ -19,6 +19,7 @@ public:
     Pricer(const Pricer& mypricer);
     void create_vector(vector<double>& x, int start_in, int end_in, int num_in);
     void explicit_scheme(const Asset& myAsset,const Option& opt);
+    void implicit_scheme(const Asset& myAsset, const Option& opt);
     void set_boundaries(double cur_spot, const Option& opt,int j,double time_to_mat);
 	~Pricer();
 	

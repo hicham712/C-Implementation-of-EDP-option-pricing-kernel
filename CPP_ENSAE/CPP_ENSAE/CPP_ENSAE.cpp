@@ -6,6 +6,7 @@
 #include "Pricer.h"
 #include <chrono>
 #include <vector>
+
 using namespace std;
 
 // Installation de chrono
@@ -86,7 +87,7 @@ int main()
     Call c2;
     Pricer myPricer(100,100,2);
     myPricer.explicit_scheme(myasset, callOption);
-
+    myPricer.implicit_scheme(myasset, callOption);
 
     // time analasis
     bool test = false;
