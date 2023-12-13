@@ -20,8 +20,6 @@ void printTime(TimeVar t1) {
 }
 
 
-
-
 void main_time_pricer_analysis()
 {
     vector<float> timeVectorSpace;
@@ -38,14 +36,14 @@ void main_time_pricer_analysis()
         Asset myasset(0.20, 0.02, 100, 0.02);
         Call callOption(100.0, 1.0);
         // Creation des classes pricers
-        Pricer myPricer1(Ntime, Ntime, Bounds);
+        Pricer myPricer1(Ntime, Nspace, Bounds);
         myPricer1.explicit_scheme(myasset, callOption);
 
         //Function
         timeVectorSpace.push_back((duration(timeNow() - tstart) / 1e6));
 
         tstart2 = timeNow();
-        Pricer myPricer2(Ntime, Ntime, Bounds);
+        Pricer myPricer2(Ntime, Nspace, Bounds);
         myPricer2.explicit_scheme(myasset, callOption);
         timeVectorTime.push_back((duration(timeNow() - tstart2) / 1e6));
 
@@ -66,8 +64,8 @@ void main_time_pricer_analysis()
 
 int main()
 {
-    int Nspace = 1000;
-    int Ntime = 1000;
+    int Nspace = 20;
+    int Ntime = 20;
     int Bounds = 2;
     double vol = 0.2;
     double rates = 0.0;
@@ -85,7 +83,7 @@ int main()
 
     cout << "----------------------- Pricing = ---------------------------" << endl;
     Call c2;
-    Pricer myPricer(100,100,2);
+    Pricer myPricer(Ntime, Nspace,2);
     myPricer.explicit_scheme(myasset, callOption);
     myPricer.implicit_scheme(myasset, callOption);
 

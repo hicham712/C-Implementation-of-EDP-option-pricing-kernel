@@ -102,31 +102,42 @@ void Pricer::implicit_scheme(const Asset& myAsset, const Option& opt)
 	double pm = 1 +pu+pd;
 	double time_to_mat = opt.get_maturity();
 
-	MatrixXd A_matrix(Nspace-1, Nspace-1);
+
+	MatrixXd A_matrix = MatrixXd::Zero(Nspace - 1, Nspace - 1);
 	for (int i = 0;i < Nspace - 2;i++) {
-		A_matrix(i, i) = pm;
-		A_matrix(i, i + 1) = -pu;
-		A_matrix(i + 1, i) = -pd;
+		A_matrix(i, i) = pm ; //
+		A_matrix(i, i + 1) = -pu ; 
+		A_matrix(i + 1, i) = -pd; 
 	}
 	A_matrix(Nspace - 2, Nspace - 2) = pm;
+	
 	MatrixXd u_inv_mat = A_matrix.inverse();
-	MatrixXd u_bounds(1, Nspace - 1);
-	MatrixXd u_results(Ntime + 1, Nspace + 1);
+	cout << "INVVVVVV----------- INV----------------------" << endl;
+	cout << A_matrix << endl;
+	MatrixXd u_bounds = MatrixXd::Zero(Nspace - 1, 1);
+	MatrixXd u_results= MatrixXd::Zero(Nspace + 1, Nspace + 1);
 	double cur_spot = myAsset.get_spot();
 	create_vector(grid, -Bounds, Bounds, Nspace + 1);
+
 	for (int i = 0;i < Nspace+1;i++) {
-		u_results(Ntime, i) = init_cond(opt, myAsset.get_spot(), grid[i]);
+		u_results(i, Ntime) = init_cond(opt, myAsset.get_spot(), grid[i]); 
 	}
 	
-	for (int i = Ntime;i > 1;i--) {
+	for (int i = Ntime;i > 0;i--) {
 		u_bounds(0, 0) = -pd * opt.payoff(cur_spot * exp(-Bounds));
-		u_bounds(0,Nspace - 2) = -pu * opt.payoff(cur_spot * exp(Bounds));
-		cout << u_results.block(i, 1, 1, u_results.cols() - 2) << endl;
-		cout << u_inv_mat << endl;
-		u_results.block(i - 1,1,1,u_results.cols()-2 )=(u_results.block(i, 1, 1, u_results.cols() - 2)-u_bounds)*u_inv_mat;
-		u_results(i - 1, 0) = opt.payoff(cur_spot * exp(-Bounds));
-		u_results(i - 1, Nspace) = opt.payoff(cur_spot * exp(Bounds));
+		u_bounds(Nspace - 2, 0) = -pu * opt.payoff(cur_spot * exp(Bounds));
+
+
+		u_results.block(1,i-1, u_results.cols() - 2, 1)= u_inv_mat * (u_results.block(1, i, u_results.cols() - 2, 1) -u_bounds);
+		
+		u_results(0, i-1) = opt.payoff(cur_spot * exp(-Bounds));
+		u_results(Nspace, i - 1 ) = opt.payoff(cur_spot * exp(Bounds));
+
+		
 	}
+
+	cout << "u_results----------- row----------------------" << endl;
+	cout << u_results.col(0) << endl;
 }
 
 Pricer::~Pricer()
