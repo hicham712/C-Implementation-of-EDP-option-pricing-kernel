@@ -76,14 +76,14 @@ int main()
     double div_yield = 0;
 
     Asset myasset(vol, rates, spotPrice, div_yield); // 	Asset(double vol, double rate, double spot, double div_yield);
-    Put callOption(strike, maturity); // Option(strike, maturity) 
+    Call callOption(strike, maturity); // Option(strike, maturity) 
     cout << " --- print all info" << endl;
     callOption.print();
 
     std::cout << "Call Option Payoff: " << callOption.payoff(spotPrice) << "\n";
 
     cout << "----------------------- Pricing = ---------------------------" << endl;
-    Put c2;
+    Call c2;
     Pricer myPricer(Ntime, Nspace,2);
     myPricer.explicit_scheme(myasset, callOption);
     myPricer.implicit_scheme(myasset, callOption);
