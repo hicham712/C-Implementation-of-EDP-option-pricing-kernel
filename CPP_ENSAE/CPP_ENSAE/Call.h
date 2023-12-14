@@ -1,20 +1,30 @@
 #pragma once
 #include "Option.h"
 #include <iostream>
-#include <algorithm> 
-class Call : public Option
-{
+#include <algorithm>
 
+// Class representing a call option, derived from the base class Option
+class Call : public Option {
 public:
-	Call() : Option(){}
-	Call(double strike, double maturity) : Option(strike, maturity) {}
-	Call(const Call& c1) : Option(c1.strike, c1.maturity) {}
+    // Default constructor
+    Call() : Option() {}
 
-	~Call()  override{ std::cout << "Destructor for Call Option\n"; }
+    // Parameterized constructor
+    Call(double strike, double maturity) : Option(strike, maturity) {}
 
-	void print() const override;
-	double payoff(double spot) const override;
-	Call& operator=(const Call& c1);
+    // Copy constructor
+    Call(const Call& c1) : Option(c1.strike, c1.maturity) {}
 
+    // Destructor
+    ~Call() override { std::cout << "Destructor for Call Option\n"; }
+
+    // Override the print function to provide specific information about the call option
+    void print() const override;
+
+    // Override the payoff function to calculate the payoff for a call option
+    double payoff(double spot) const override;
+
+    // Override the assignment operator to perform member-wise assignment
+    Call& operator=(const Call& c1);
 };
 
