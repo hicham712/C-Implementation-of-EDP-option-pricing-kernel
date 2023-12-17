@@ -1,14 +1,23 @@
 ﻿  CPP_ENSAE.cpp
-C:\Users\thoma\Desktop\CppEDP\CPP_ENSAE\CPP_ENSAE\CPP_ENSAE.cpp(44,65): warning C4244: 'argument' : conversion de 'double' en '_Ty', perte possible de données
+C:\Users\Hicham\Desktop\ENSAE\API_Thomas_Hicham\CppEDP\CPP_ENSAE\CPP_ENSAE\CPP_ENSAE.cpp(47,65): warning C4244: 'argument' : conversion de 'double' en '_Ty', perte possible de données
           with
           [
               _Ty=float
           ]
-C:\Users\thoma\Desktop\CppEDP\CPP_ENSAE\CPP_ENSAE\CPP_ENSAE.cpp(49,65): warning C4244: 'argument' : conversion de 'double' en '_Ty', perte possible de données
+C:\Users\Hicham\Desktop\ENSAE\API_Thomas_Hicham\CppEDP\CPP_ENSAE\CPP_ENSAE\CPP_ENSAE.cpp(52,65): warning C4244: 'argument' : conversion de 'double' en '_Ty', perte possible de données
           with
           [
               _Ty=float
           ]
-  Pricer.cpp
-  Génération de code en cours...
-  CPP_ENSAE.vcxproj -> C:\Users\thoma\Desktop\CppEDP\CPP_ENSAE\x64\Debug\CPP_ENSAE.exe
+C:\Users\Hicham\Desktop\ENSAE\API_Thomas_Hicham\CppEDP\CPP_ENSAE\CPP_ENSAE\CPP_ENSAE.cpp(69,48): warning C4244: 'return' : conversion de '_Ty' en 'float', perte possible de données
+          with
+          [
+              _Ty=double
+          ]
+C:\Users\Hicham\Desktop\ENSAE\API_Thomas_Hicham\CppEDP\CPP_ENSAE\CPP_ENSAE\CPP_ENSAE.cpp(93,97): warning C4244: 'argument' : conversion de 'double' en 'int', perte possible de données
+C:\Users\Hicham\Desktop\ENSAE\API_Thomas_Hicham\CppEDP\CPP_ENSAE\CPP_ENSAE\CPP_ENSAE.cpp(93,62): warning C4244: 'argument' : conversion de 'double' en 'int', perte possible de données
+C:\Users\Hicham\Desktop\ENSAE\API_Thomas_Hicham\CppEDP\CPP_ENSAE\CPP_ENSAE\CPP_ENSAE.cpp(94,97): warning C4244: 'argument' : conversion de 'double' en 'int', perte possible de données
+C:\Users\Hicham\Desktop\ENSAE\API_Thomas_Hicham\CppEDP\CPP_ENSAE\CPP_ENSAE\CPP_ENSAE.cpp(94,62): warning C4244: 'argument' : conversion de 'double' en 'int', perte possible de données
+C:\Users\Hicham\Desktop\ENSAE\API_Thomas_Hicham\CppEDP\CPP_ENSAE\CPP_ENSAE\CPP_ENSAE.cpp(95,97): warning C4244: 'argument' : conversion de 'double' en 'int', perte possible de données
+C:\Users\Hicham\Desktop\ENSAE\API_Thomas_Hicham\CppEDP\CPP_ENSAE\CPP_ENSAE\CPP_ENSAE.cpp(95,62): warning C4244: 'argument' : conversion de 'double' en 'int', perte possible de données
+  CPP_ENSAE.vcxproj -> C:\Users\Hicham\Desktop\ENSAE\API_Thomas_Hicham\CppEDP\CPP_ENSAE\x64\Debug\CPP_ENSAE.exe

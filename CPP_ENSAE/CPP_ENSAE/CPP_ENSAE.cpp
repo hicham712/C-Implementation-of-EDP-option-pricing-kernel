@@ -7,6 +7,9 @@
 #include "Pricer.h"
 #include <chrono>
 #include <vector>
+#include <numeric>
+#include <Eigen/Dense>
+
 
 using namespace std;
 
@@ -62,6 +65,43 @@ void main_time_pricer_analysis()
     }
     cout << endl;
 }
+float average(std::vector<double> const& v) {
+    return accumulate(v.begin(), v.end(), 0.0) / v.size();
+}
+void fill_BS_prices(int Nspace,Option& myOpt,Asset myAsset,vector<double>& price_BS,vector<double>& spot_prices) {
+    for (int i = 0;i < Nspace + 1;i++) {
+        price_BS.push_back(myOpt.BS_price(spot_prices[i],myOpt.get_strike(),myOpt.get_maturity(),myAsset.get_rate(),myAsset.get_vol()));
+    }
+}
+
+void BS_VS_EDP(Asset myAsset,Option& myOpt) {
+    int Nspaces[3] = { 100, 400,1000 };;
+    int Ntimes[3] = { 100,250,250 };
+    int Bounds = 2;
+    
+    Pricer myPricer1(Ntimes[0], Nspaces[0], 2);
+    std::vector<double> result_explicit1_=myPricer1.explicit_scheme(myAsset, myOpt);
+    std::vector<double> result_implicit1_ = myPricer1.implicit_scheme(myAsset, myOpt);
+    Pricer myPricer2(Ntimes[1], Nspaces[1], 2);
+    std::vector<double> result_explicit2_ = myPricer2.explicit_scheme(myAsset, myOpt);
+    std::vector<double> result_implicit2_ = myPricer2.implicit_scheme(myAsset, myOpt);
+    Pricer myPricer3(Ntimes[2], Nspaces[2], 2);
+    std::vector<double> result_explicit3_ = myPricer3.explicit_scheme(myAsset, myOpt);
+    std::vector<double> result_implicit3_ = myPricer3.implicit_scheme(myAsset, myOpt);
+
+    vector <double> spot_prices1,spot_prices2,spot_prices3;
+    myPricer1.create_vector(spot_prices1, myAsset.get_spot() * exp(-Bounds), myAsset.get_spot() * exp(Bounds), Nspaces[0] + 1);
+    myPricer2.create_vector(spot_prices2, myAsset.get_spot() * exp(-Bounds), myAsset.get_spot() * exp(Bounds), Nspaces[1] + 1);
+    myPricer2.create_vector(spot_prices3, myAsset.get_spot() * exp(-Bounds), myAsset.get_spot() * exp(Bounds), Nspaces[2] + 1);
+    vector <double> price1_BS, price2_BS, price3_BS;
+    fill_BS_prices(Nspaces[0], myOpt,myAsset,price1_BS, spot_prices1);
+    fill_BS_prices(Nspaces[1], myOpt, myAsset, price2_BS, spot_prices2);
+    fill_BS_prices(Nspaces[2], myOpt, myAsset, price3_BS, spot_prices3);
+    cout << "average error for Nspace 100 and Ntime 100 is " << abs(average(price1_BS)-average(result_explicit1_)) << endl;
+    cout << "average error for Nspace 100 and Ntime 100 is " << abs(average(price2_BS) - average(result_implicit2_)) << endl;
+    cout << "average error for Nspace 100 and Ntime 100 is " << abs(average(price3_BS) - average(result_implicit3_)) << endl;
+}
+
 
 int main()
 {
@@ -85,13 +125,14 @@ int main()
     cout << "----------------------- Pricing = ---------------------------" << endl;
     Call c2;
     Pricer myPricer(Ntime, Nspace,2);
-    myPricer.explicit_scheme(myasset, callOption);
-    myPricer.implicit_scheme(myasset, callOption);
+    std::vector<double> result_explicit_=myPricer.explicit_scheme(myasset, callOption);
+    std::vector<double> result_implicit= myPricer.implicit_scheme(myasset, callOption);
 
     // time analasis
-    bool test = false;
+    bool test = true;
     if (test) {
-        main_time_pricer_analysis();
+        //main_time_pricer_analysis();
+        BS_VS_EDP(myasset, callOption);
     }
     return 0;
 

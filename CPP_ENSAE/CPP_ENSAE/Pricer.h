@@ -38,10 +38,10 @@ public:
     void create_vector(vector<double>& x, int start_in, int end_in, int num_in);
 
     // Explicit scheme for option pricing
-    void explicit_scheme(const Asset& myAsset, const Option& opt);
+    vector<double> explicit_scheme(const Asset& myAsset, const Option& opt);
 
     // Implicit scheme for option pricing
-    void implicit_scheme(const Asset& myAsset, const Option& opt);
+    vector<double> implicit_scheme(const Asset& myAsset, const Option& opt);
 
     // Function to set boundaries for the option pricing grid
     void set_boundaries(double cur_spot, const Option& opt, int j);

@@ -110,7 +110,7 @@ void Pricer::set_boundaries(double cur_spot, const Option& opt, int j)
 }
 
 // Explicit scheme for option pricing
-void Pricer::explicit_scheme(const Asset& myAsset, const Option& opt)
+vector<double> Pricer::explicit_scheme(const Asset& myAsset, const Option& opt)
 {
     double pu, pm, pd;
     calculate_Pu_Pm_Pd(opt, myAsset, pu, pm, pd, true);
@@ -125,10 +125,11 @@ void Pricer::explicit_scheme(const Asset& myAsset, const Option& opt)
         }
         u_previous = u_current;
     }
+    return u_current;
 }
 
 // Implicit scheme for option pricing
-void Pricer::implicit_scheme(const Asset& myAsset, const Option& opt)
+vector<double> Pricer::implicit_scheme(const Asset& myAsset, const Option& opt)
 {
     // Calculate pu, pm, and pd based on the implicit method
     double pu, pm, pd;
@@ -140,7 +141,7 @@ void Pricer::implicit_scheme(const Asset& myAsset, const Option& opt)
 
     // Initialize matrices for boundary conditions and results
     MatrixXd u_bounds = MatrixXd::Zero(Nspace - 1, 1);
-    MatrixXd u_results = MatrixXd::Zero(Nspace + 1, Nspace + 1);
+    MatrixXd u_results = MatrixXd::Zero(Nspace + 1, Ntime + 1);
     double cur_spot = myAsset.get_spot();
     create_vector(grid, -Bounds, Bounds, Nspace + 1);
 
@@ -155,17 +156,22 @@ void Pricer::implicit_scheme(const Asset& myAsset, const Option& opt)
         u_bounds(0, 0) = -pd * opt.payoff(cur_spot * exp(-Bounds));
         u_bounds(Nspace - 2, 0) = -pu * opt.payoff(cur_spot * exp(Bounds));
 
+        double a = u_results.cols();
         // Solve the implicit scheme equation
-        u_results.block(1, i - 1, u_results.cols() - 2, 1) = u_inv_mat * (u_results.block(1, i, u_results.cols() - 2, 1) - u_bounds);
+        u_results.block(1, i - 1, u_results.rows() - 2, 1) = u_inv_mat * (u_results.block(1, i, u_results.rows() - 2, 1) - u_bounds);
 
         // Set boundary conditions at each time step
         u_results(0, i - 1) = opt.payoff(cur_spot * exp(-Bounds));
         u_results(Nspace, i - 1) = opt.payoff(cur_spot * exp(Bounds));
     }
+    
+    // Extract the first column (column with index 0)
+    Eigen::VectorXd columnVector = u_results.col(0);
 
-    // Output the results for the first row
-    cout << "u_results ----------- row ----------------------" << endl;
-    cout << u_results.col(0) << endl;
+    // Convert Eigen column vector to std::vector
+    std::vector<double> final_result(columnVector.data(), columnVector.data() + columnVector.size());
+    return final_result;
+
 }
 
 // Destructor

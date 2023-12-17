@@ -24,6 +24,9 @@ public:
     // Virtual function to print option details
     virtual void print() const;
 
+    // Virtual function to get the BS price of the option
+    virtual double BS_price(double S, double K, double T, double r, double sigma) const=0;
+
     // Pure virtual function to calculate the payoff, making Option an abstract class
     virtual double payoff(double spot) const = 0;
 

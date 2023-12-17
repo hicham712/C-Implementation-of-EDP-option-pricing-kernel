@@ -24,6 +24,9 @@ public:
     // Override the payoff function to calculate the payoff for a call option
     double payoff(double spot) const override;
 
+    // Override the BS function to calculate the option price according to Black & Scholes 
+    double BS_price(double S, double K, double T, double r, double sigma) const override;
+
     // Override the assignment operator to perform member-wise assignment
     Call& operator=(const Call& c1);
 };
