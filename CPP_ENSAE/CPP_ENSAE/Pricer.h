@@ -14,6 +14,7 @@ class Pricer {
     vector<double> u_previous;  // Vector representing the previous solution
     vector<double> grid;        // Vector representing the spatial grid
 
+
     // Private member functions for setting initial conditions and handling boundaries
     void set_initial_conditions(const Option& opt, const Asset& myAsset);
     double init_cond(const Option& opt, double cur_spot, double j);
@@ -44,7 +45,7 @@ public:
     vector<double> implicit_scheme(const Asset& myAsset, const Option& opt);
 
     // Function to set boundaries for the option pricing grid
-    void set_boundaries(double cur_spot, const Option& opt, int j);
+    void set_boundaries(double cur_spot, const Option& opt);
 
     // Destructor
     ~Pricer();

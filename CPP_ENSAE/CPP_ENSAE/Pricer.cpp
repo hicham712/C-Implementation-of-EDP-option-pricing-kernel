@@ -103,7 +103,7 @@ void Pricer::set_initial_conditions(const Option& opt, const Asset& myAsset)
 }
 
 // Function to set the boundary conditions at each time
-void Pricer::set_boundaries(double cur_spot, const Option& opt, int j)
+void Pricer::set_boundaries(double cur_spot, const Option& opt)
 {
     u_current[0] = opt.payoff(cur_spot * exp(-Bounds));
     u_current[Nspace] = opt.payoff(cur_spot * exp(Bounds));
@@ -118,10 +118,11 @@ vector<double> Pricer::explicit_scheme(const Asset& myAsset, const Option& opt)
 
     for (int i = 0; i < Ntime; i++)
     {
+
         for (int j = Nspace - 1; j > 1; j--)
         {
             u_current[j] = pu * u_previous[j + 1] + pd * u_previous[j - 1] + pm * u_previous[j];
-            set_boundaries(myAsset.get_spot(), opt, j);
+            set_boundaries(myAsset.get_spot(), opt);
         }
         u_previous = u_current;
     }

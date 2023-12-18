@@ -70,7 +70,7 @@ float average(std::vector<double> const& v) {
 }
 void fill_BS_prices(int Nspace,Option& myOpt,Asset myAsset,vector<double>& price_BS,vector<double>& spot_prices) {
     for (int i = 0;i < Nspace + 1;i++) {
-        price_BS.push_back(myOpt.BS_price(spot_prices[i],myOpt.get_strike(),myOpt.get_maturity(),myAsset.get_rate(),myAsset.get_vol()));
+        price_BS.push_back(myOpt.BS_price(myAsset.get_spot()*exp(spot_prices[i]),myOpt.get_strike(),myOpt.get_maturity(),myAsset.get_rate(),myAsset.get_vol()));
     }
 }
 
@@ -90,14 +90,14 @@ void BS_VS_EDP(Asset myAsset,Option& myOpt) {
     std::vector<double> result_implicit3_ = myPricer3.implicit_scheme(myAsset, myOpt);
 
     vector <double> spot_prices1,spot_prices2,spot_prices3;
-    myPricer1.create_vector(spot_prices1, myAsset.get_spot() * exp(-Bounds), myAsset.get_spot() * exp(Bounds), Nspaces[0] + 1);
-    myPricer2.create_vector(spot_prices2, myAsset.get_spot() * exp(-Bounds), myAsset.get_spot() * exp(Bounds), Nspaces[1] + 1);
-    myPricer2.create_vector(spot_prices3, myAsset.get_spot() * exp(-Bounds), myAsset.get_spot() * exp(Bounds), Nspaces[2] + 1);
+    myPricer1.create_vector(spot_prices1, -Bounds, Bounds, Nspaces[0] + 1);
+    myPricer2.create_vector(spot_prices2, -Bounds, Bounds, Nspaces[1] + 1);
+    myPricer2.create_vector(spot_prices3, -Bounds, Bounds, Nspaces[2] + 1);
     vector <double> price1_BS, price2_BS, price3_BS;
     fill_BS_prices(Nspaces[0], myOpt,myAsset,price1_BS, spot_prices1);
     fill_BS_prices(Nspaces[1], myOpt, myAsset, price2_BS, spot_prices2);
     fill_BS_prices(Nspaces[2], myOpt, myAsset, price3_BS, spot_prices3);
-    cout << "average error for Nspace 100 and Ntime 100 is " << abs(average(price1_BS)-average(result_explicit1_)) << endl;
+    cout << "average error for Nspace 100 and Ntime 100 is " << abs(average(price1_BS)-average(result_implicit1_)) << endl;
     cout << "average error for Nspace 100 and Ntime 100 is " << abs(average(price2_BS) - average(result_implicit2_)) << endl;
     cout << "average error for Nspace 100 and Ntime 100 is " << abs(average(price3_BS) - average(result_implicit3_)) << endl;
 }
@@ -109,7 +109,7 @@ int main()
     int Ntime = 20;
     int Bounds = 2;
     double vol = 0.2;
-    double rates = 0.0;
+    double rates = 0.05;
     double maturity = 1;
     double spotPrice = 105;
     double strike = 100;
