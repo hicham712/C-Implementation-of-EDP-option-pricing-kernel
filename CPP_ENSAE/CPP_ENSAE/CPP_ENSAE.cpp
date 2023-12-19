@@ -119,7 +119,7 @@ int main()
     int Ntime = 1600;
     int Bounds = 2;
     double vol = 0.2;
-    double rates = 0.0;
+    double rates = 0.05;
     double maturity = 1;
     double spotPrice = 35;
     double strike = 30;
@@ -133,7 +133,7 @@ int main()
     std::vector<double> result_explicit_ = myPricer.explicit_scheme(myasset, callOption);
     std::vector<double> result_implicit = myPricer.implicit_scheme(myasset, callOption);
     myPricer.get_price_explicit();
-    //cout << "Black and Scholes price: "<< callOption
+    cout << "Black and Scholes price: " << callOption.BS_price(myasset.get_spot(), myasset);
 
     // Comparaison with B&S method
     bool test_accuracy = true;

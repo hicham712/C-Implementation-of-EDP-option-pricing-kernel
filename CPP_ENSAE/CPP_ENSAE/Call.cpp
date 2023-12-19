@@ -23,7 +23,7 @@ double Call::payoff(double spot) const
 double Call::BS_price(const double spot, const Asset& myAsset) const
 {
     double d1 = (log(spot / strike) + (myAsset.get_rate() + 0.5 * pow(myAsset.get_vol(), 2)) * maturity) / (myAsset.get_vol() * sqrt(maturity));
-    double d2 = d1 - myAsset.get_rate() * sqrt(maturity);
+    double d2 = d1 - myAsset.get_vol() * sqrt(maturity);
     return spot * (0.5 + 0.5 * erf(d1 / sqrt(2))) - strike * exp(-myAsset.get_rate() * maturity) * (0.5 + 0.5 * erf(d2 / sqrt(2)));
 }
 
