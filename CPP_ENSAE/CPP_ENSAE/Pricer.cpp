@@ -66,7 +66,6 @@ void Pricer::calculate_Pu_Pm_Pd(const Option& opt, const Asset& myAsset, double&
     double dx = 2 * static_cast<double>(Bounds) / static_cast<double>(Nspace);
     double sig2 = pow(myAsset.get_vol(), 2);
     double drift = myAsset.get_rate() - sig2 / 2;
-
     pu = dt * (0.5 * sig2 / pow(dx, 2) + drift * 0.5 / dx);
     pd = dt * (sig2 * 0.5 / pow(dx, 2) - drift * 0.5 / dx);
     if (explicit_method) {

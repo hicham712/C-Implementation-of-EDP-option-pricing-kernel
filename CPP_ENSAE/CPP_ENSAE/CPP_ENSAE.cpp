@@ -1,4 +1,3 @@
-
 #include <iostream>
 #include "Asset.h"
 #include "Option.h"
@@ -24,44 +23,50 @@ void printTime(TimeVar t1) {
 }
 
 
+
+
 void main_time_pricer_analysis()
 {
-    vector<float> timeVectorSpace;
-    vector<float> timeVectorTime;
-    int step = 1000; // Variable que l'on peut modifier
+    vector<float> timeVectorExplicit;
+    vector<float> timeVectorImplicit;
+    int step = 100; // Variable que l'on peut modifier
     TimeVar tstart;
     TimeVar tstart2;
 
-    int Nspace = 1000;
-    int Ntime = 1000;
+    int Nspace = 100;
+    int Ntime = 100;
     int Bounds = 2;
-    for (int i = 2; i < 10001; i += step) {
+    vector<double> result_explicit;
+    vector<double> result_implicit;
+
+    for (int i = 2; i < 1000; i += step) {
 
         Asset myasset(0.20, 0.02, 100, 0.02);
         Call callOption(100.0, 1.0);
         // Creation des classes pricers
-        Pricer myPricer1(Ntime, Nspace, Bounds);
-        myPricer1.explicit_scheme(myasset, callOption);
+        Pricer myPricer(Ntime, Nspace, Bounds);
 
-        //Function
-        timeVectorSpace.push_back((duration(timeNow() - tstart) / 1e6));
 
+        //Function explicit
+        tstart = timeNow();
+        result_explicit = myPricer.explicit_scheme(myasset, callOption);
+        timeVectorExplicit.push_back((duration(timeNow() - tstart) / 1e6));
+
+        //Function implicit
         tstart2 = timeNow();
-        Pricer myPricer2(Ntime, Nspace, Bounds);
-        myPricer2.explicit_scheme(myasset, callOption);
-        timeVectorTime.push_back((duration(timeNow() - tstart2) / 1e6));
+        result_implicit = myPricer.implicit_scheme(myasset, callOption);
+        timeVectorImplicit.push_back((duration(timeNow() - tstart) / 1e6));
 
-        Nspace += step;
         Ntime += step;
     }
-    cout << "-----> Vector of time for space variation" << endl;
-    for (int i = 0; i < timeVectorSpace.size(); i++) {
-        cout << "Size " << (i + 1) * step << " = " << timeVectorSpace[i] << "msec \n";
+    cout << "-----> Vector of time for explicit_scheme" << endl;
+    for (int i = 0; i < timeVectorExplicit.size(); i++) {
+        cout << "Size " << (i + 1) * step << " = " << timeVectorExplicit[i] << " msec \n";
     }
     cout << endl;
-    cout << "-----> Vector of time for time variation" << endl;
-    for (int i = 0; i < timeVectorTime.size(); i++) {
-        cout << "Size " << (i + 1) * step << " = " << timeVectorTime[i] << "msec \n";
+    cout << "-----> Vector of time for implicit_scheme" << endl;
+    for (int i = 0; i < timeVectorImplicit.size(); i++) {
+        cout << "Size " << (i + 1) * step << " = " << timeVectorImplicit[i] << " msec \n";
     }
     cout << endl;
 }
@@ -75,8 +80,8 @@ void fill_BS_prices(int Nspace,Option& myOpt,Asset myAsset,vector<double>& price
 }
 
 void BS_VS_EDP(Asset myAsset,Option& myOpt) {
-    int Nspaces[3] = { 100, 400,1000 };;
-    int Ntimes[3] = { 100,250,250 };
+    int Nspaces[3] = { 100, 100,400 };;
+    int Ntimes[3] = { 100,400,1000 };
     int Bounds = 2;
     
     Pricer myPricer1(Ntimes[0], Nspaces[0], 2);
@@ -105,34 +110,36 @@ void BS_VS_EDP(Asset myAsset,Option& myOpt) {
 
 int main()
 {
-    int Nspace = 20;
-    int Ntime = 20;
+    // Inputs
+    int Nspace = 100;
+    int Ntime = 100;
     int Bounds = 2;
     double vol = 0.2;
-    double rates = 0.05;
+    double rates = 0.1;
     double maturity = 1;
     double spotPrice = 105;
     double strike = 100;
     double div_yield = 0;
 
-    Asset myasset(vol, rates, spotPrice, div_yield); // 	Asset(double vol, double rate, double spot, double div_yield);
-    Call callOption(strike, maturity); // Option(strike, maturity) 
-    cout << " --- print all info" << endl;
-    callOption.print();
+    // Fill classes
+    Asset myasset(vol, rates, spotPrice, div_yield);
+    Call callOption(strike, maturity);
 
-    std::cout << "Call Option Payoff: " << callOption.payoff(spotPrice) << "\n";
+    // Pricing
+    Pricer myPricer(Ntime, Nspace, Bounds);
+    std::vector<double> result_explicit_ = myPricer.explicit_scheme(myasset, callOption);
+    std::vector<double> result_implicit = myPricer.implicit_scheme(myasset, callOption);
 
-    cout << "----------------------- Pricing = ---------------------------" << endl;
-    Call c2;
-    Pricer myPricer(Ntime, Nspace,2);
-    std::vector<double> result_explicit_=myPricer.explicit_scheme(myasset, callOption);
-    std::vector<double> result_implicit= myPricer.implicit_scheme(myasset, callOption);
-
-    // time analasis
-    bool test = true;
-    if (test) {
-        //main_time_pricer_analysis();
+    // Comparaison with B&S method
+    bool test_accuracy = false;
+    if (test_accuracy) {
         BS_VS_EDP(myasset, callOption);
+    }
+
+    // Time analysis
+    bool test_speed = true;
+    if (test_speed) {
+        main_time_pricer_analysis();
     }
     return 0;
 
