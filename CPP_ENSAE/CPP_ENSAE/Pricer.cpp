@@ -95,7 +95,7 @@ void Pricer::set_initial_conditions(const Option& opt, const Asset& myAsset)
 {
     u_current.resize(Nspace + 1, 0.0);
     u_previous.resize(Nspace + 1, 0.0);
-    create_vector(grid, -Bounds, Bounds, Nspace + 1);
+    create_vector(grid, -Bounds, Bounds*(1+myAsset.get_rate()*opt.get_maturity()), Nspace + 1);
     for (int j = 0; j < Nspace + 1; j++) {
         u_previous[j] = init_cond(opt, myAsset.get_spot(), grid[j]);
     }

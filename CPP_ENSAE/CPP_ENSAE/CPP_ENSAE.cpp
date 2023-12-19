@@ -19,7 +19,7 @@ typedef std::chrono::high_resolution_clock::time_point TimeVar;
 #define timeNow() std::chrono::high_resolution_clock::now()
 // Fonction permettant de calculer le temps d'execution entre t1 et maintenant
 void printTime(TimeVar t1) {
-    cout << "Execution time : " << duration(timeNow() - t1) / 1e9 << " sec" << endl;
+    cout << "Execution time : " << duration(timeNow() - t1) / 1e6 << " msec" << endl;
 }
 
 
@@ -102,9 +102,9 @@ void BS_VS_EDP(Asset myAsset,Option& myOpt) {
     fill_BS_prices(Nspaces[0], myOpt,myAsset,price1_BS, spot_prices1);
     fill_BS_prices(Nspaces[1], myOpt, myAsset, price2_BS, spot_prices2);
     fill_BS_prices(Nspaces[2], myOpt, myAsset, price3_BS, spot_prices3);
-    cout << "average error for Nspace 100 and Ntime 100 is " << abs(average(price1_BS)-average(result_implicit1_)) << endl;
-    cout << "average error for Nspace 100 and Ntime 100 is " << abs(average(price2_BS) - average(result_implicit2_)) << endl;
-    cout << "average error for Nspace 100 and Ntime 100 is " << abs(average(price3_BS) - average(result_implicit3_)) << endl;
+    cout << "average error for Nspace 100 and Ntime 100 is " << abs((average(price1_BS)-average(result_explicit1_))/myAsset.get_spot()) << "% "<< endl;
+    cout << "average error for Nspace 100 and Ntime 100 is " << abs((average(price2_BS) - average(result_explicit2_)) / myAsset.get_spot()) << "% " << endl;
+    cout << "average error for Nspace 100 and Ntime 100 is " << abs((average(price3_BS) - average(result_explicit3_)) / myAsset.get_spot()) << "% " << endl;
 }
 
 
@@ -115,9 +115,9 @@ int main()
     int Ntime = 100;
     int Bounds = 2;
     double vol = 0.2;
-    double rates = 0.1;
+    double rates = 0.05;
     double maturity = 1;
-    double spotPrice = 105;
+    double spotPrice = 200;
     double strike = 100;
     double div_yield = 0;
 
@@ -131,13 +131,13 @@ int main()
     std::vector<double> result_implicit = myPricer.implicit_scheme(myasset, callOption);
 
     // Comparaison with B&S method
-    bool test_accuracy = false;
+    bool test_accuracy = true;
     if (test_accuracy) {
         BS_VS_EDP(myasset, callOption);
     }
 
     // Time analysis
-    bool test_speed = true;
+    bool test_speed = false;
     if (test_speed) {
         main_time_pricer_analysis();
     }
