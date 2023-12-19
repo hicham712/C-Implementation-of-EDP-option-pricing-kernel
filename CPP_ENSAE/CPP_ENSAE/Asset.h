@@ -6,14 +6,13 @@ class Asset
     double vol;        // Volatility of the asset
     double rate;       // Risk free rate
     double spot;       // Current spot price of the asset
-    double div_yield;  // Dividend yield of the asset
 
 public:
     // Default constructor
     Asset();
 
     // Parameterized constructor
-    Asset(double vol, double rate, double spot, double div_yield);
+    Asset(double vol, double rate, double spot);
 
     // Copy constructor
     Asset(const Asset& myactif);
@@ -26,9 +25,6 @@ public:
 
     // Getter function for retrieving the spot price
     double get_spot() const;
-
-    // Getter function for retrieving the dividend yield
-    double get_div_yield() const;
 
     // Display a summary of the asset details
     void summary();

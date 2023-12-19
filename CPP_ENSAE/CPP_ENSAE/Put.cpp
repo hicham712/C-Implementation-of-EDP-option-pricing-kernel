@@ -1,5 +1,4 @@
 #include "Put.h"
-
 // Implementation of the print function for the Put class
 void Put::print() const
 {
@@ -20,11 +19,11 @@ double Put::payoff(double spot) const
     }
 }
 
-double Put::BS_price(double S, double K, double T, double r, double sigma) const
+double Put::BS_price(const double spot, const Asset& myAsset) const
 {
-    double d1 = (log(S / K) + (r + 0.5 * pow(sigma, 2)) * T) / (sigma * sqrt(T));
-    double d2 = d1 - sigma * sqrt(T);
-    return K * exp(-r * T) * (0.5+0.5*erf(-d2 / sqrt(2))) - S *(0.5+0.5* erf(-d1 / sqrt(2)));
+    double d1 = (log(spot / strike) + (myAsset.get_rate() + 0.5 * pow(myAsset.get_vol(), 2)) * maturity) / (myAsset.get_vol() * sqrt(maturity));
+    double d2 = d1 - myAsset.get_vol() * sqrt(maturity);
+    return strike * exp(-myAsset.get_rate() * maturity) * (0.5 + 0.5 * erf(-d2 / sqrt(2))) - spot * (0.5 + 0.5 * erf(-d1 / sqrt(2)));
 };
 
 

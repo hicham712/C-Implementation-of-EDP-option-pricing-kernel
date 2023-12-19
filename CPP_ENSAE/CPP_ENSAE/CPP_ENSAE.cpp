@@ -39,9 +39,9 @@ void main_time_pricer_analysis()
     vector<double> result_explicit;
     vector<double> result_implicit;
 
-    for (int i = 2; i < 1000; i += step) {
+    for (int i = 2; i < 1501; i += step) {
 
-        Asset myasset(0.20, 0.02, 100, 0.02);
+        Asset myasset(0.20, 0.02, 100);
         Call callOption(100.0, 1.0);
         // Creation des classes pricers
         Pricer myPricer(Ntime, Nspace, Bounds);
@@ -73,62 +73,67 @@ void main_time_pricer_analysis()
 float average(std::vector<double> const& v) {
     return accumulate(v.begin(), v.end(), 0.0) / v.size();
 }
-void fill_BS_prices(int Nspace,Option& myOpt,Asset myAsset,vector<double>& price_BS,vector<double>& spot_prices) {
+void fill_BS_prices(int Nspace,Option& myOpt,const Asset myAsset,vector<double>& price_BS,vector<double>& spot_prices) {
     for (int i = 0;i < Nspace + 1;i++) {
-        price_BS.push_back(myOpt.BS_price(myAsset.get_spot()*exp(spot_prices[i]),myOpt.get_strike(),myOpt.get_maturity(),myAsset.get_rate(),myAsset.get_vol()));
+        price_BS.push_back(myOpt.BS_price(myAsset.get_spot()*exp(spot_prices[i]), myAsset));
     }
 }
 
-void BS_VS_EDP(Asset myAsset,Option& myOpt) {
-    int Nspaces[3] = { 100, 100,400 };;
-    int Ntimes[3] = { 100,400,1000 };
+void BS_VS_EDP(Asset myAsset, Option& myOpt) {
+    const int NumScenarios = 3;
+    int Nspaces[NumScenarios] = { 100, 100, 400 };
+    int Ntimes[NumScenarios] = { 100, 1600, 1600 };
     int Bounds = 2;
-    
-    Pricer myPricer1(Ntimes[0], Nspaces[0], 2);
-    std::vector<double> result_explicit1_=myPricer1.explicit_scheme(myAsset, myOpt);
-    std::vector<double> result_implicit1_ = myPricer1.implicit_scheme(myAsset, myOpt);
-    Pricer myPricer2(Ntimes[1], Nspaces[1], 2);
-    std::vector<double> result_explicit2_ = myPricer2.explicit_scheme(myAsset, myOpt);
-    std::vector<double> result_implicit2_ = myPricer2.implicit_scheme(myAsset, myOpt);
-    Pricer myPricer3(Ntimes[2], Nspaces[2], 2);
-    std::vector<double> result_explicit3_ = myPricer3.explicit_scheme(myAsset, myOpt);
-    std::vector<double> result_implicit3_ = myPricer3.implicit_scheme(myAsset, myOpt);
 
-    vector <double> spot_prices1,spot_prices2,spot_prices3;
-    myPricer1.create_vector(spot_prices1, -Bounds, Bounds, Nspaces[0] + 1);
-    myPricer2.create_vector(spot_prices2, -Bounds, Bounds, Nspaces[1] + 1);
-    myPricer2.create_vector(spot_prices3, -Bounds, Bounds, Nspaces[2] + 1);
-    vector <double> price1_BS, price2_BS, price3_BS;
-    fill_BS_prices(Nspaces[0], myOpt,myAsset,price1_BS, spot_prices1);
-    fill_BS_prices(Nspaces[1], myOpt, myAsset, price2_BS, spot_prices2);
-    fill_BS_prices(Nspaces[2], myOpt, myAsset, price3_BS, spot_prices3);
-    cout << "average error for Nspace 100 and Ntime 100 is " << abs((average(price1_BS)-average(result_explicit1_))/myAsset.get_spot()) << "% "<< endl;
-    cout << "average error for Nspace 100 and Ntime 100 is " << abs((average(price2_BS) - average(result_explicit2_)) / myAsset.get_spot()) << "% " << endl;
-    cout << "average error for Nspace 100 and Ntime 100 is " << abs((average(price3_BS) - average(result_explicit3_)) / myAsset.get_spot()) << "% " << endl;
+    std::vector<Pricer> myPricers(NumScenarios);
+    std::vector<std::vector<double>> result_explicits(NumScenarios);
+    std::vector<std::vector<double>> result_implicits(NumScenarios);
+    std::vector<std::vector<double>> spot_prices(NumScenarios);
+    std::vector<std::vector<double>> prices_BS(NumScenarios);
+
+    // Loop through different scenarios
+    for (int i = 0; i < NumScenarios; ++i) {
+        myPricers[i] = Pricer(Ntimes[i], Nspaces[i], 2);
+
+        // Calculate explicit and implicit schemes
+        result_explicits[i] = myPricers[i].explicit_scheme(myAsset, myOpt);
+        result_implicits[i] = myPricers[i].implicit_scheme(myAsset, myOpt);
+
+        // Create spot prices vector
+        myPricers[i].create_vector(spot_prices[i], -Bounds, Bounds, Nspaces[i] + 1);
+
+        // Fill Black-Scholes prices
+        fill_BS_prices(Nspaces[i], myOpt, myAsset, prices_BS[i], spot_prices[i]);
+
+        // Output average error for each scenario
+        std::cout << "Average error for Nspace " << Nspaces[i] << " and Ntime " << Ntimes[i] << " is "
+            << std::abs(average(prices_BS[i]) - average(result_explicits[i])) << std::endl;
+    }
 }
 
 
 int main()
 {
     // Inputs
-    int Nspace = 100;
-    int Ntime = 100;
+    int Nspace = 400;
+    int Ntime = 1600;
     int Bounds = 2;
     double vol = 0.2;
-    double rates = 0.05;
+    double rates = 0.0;
     double maturity = 1;
-    double spotPrice = 200;
-    double strike = 100;
-    double div_yield = 0;
+    double spotPrice = 35;
+    double strike = 30;
 
     // Fill classes
-    Asset myasset(vol, rates, spotPrice, div_yield);
+    Asset myasset(vol, rates, spotPrice);
     Call callOption(strike, maturity);
 
     // Pricing
     Pricer myPricer(Ntime, Nspace, Bounds);
     std::vector<double> result_explicit_ = myPricer.explicit_scheme(myasset, callOption);
     std::vector<double> result_implicit = myPricer.implicit_scheme(myasset, callOption);
+    myPricer.get_price_explicit();
+    //cout << "Black and Scholes price: "<< callOption
 
     // Comparaison with B&S method
     bool test_accuracy = true;

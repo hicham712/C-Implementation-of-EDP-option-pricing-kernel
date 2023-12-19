@@ -10,10 +10,13 @@ class Pricer {
     int Ntime;                  // Number of time steps
     int Nspace;                 // Number of space steps
     int Bounds;                 // Bounds for the option pricing grid
+
     vector<double> u_current;   // Vector representing the current solution
     vector<double> u_previous;  // Vector representing the previous solution
     vector<double> grid;        // Vector representing the spatial grid
 
+    double price_explicit = 0.;
+    double price_implicit = 0.;
 
     // Private member functions for setting initial conditions and handling boundaries
     void set_initial_conditions(const Option& opt, const Asset& myAsset);
@@ -40,12 +43,16 @@ public:
 
     // Explicit scheme for option pricing
     vector<double> explicit_scheme(const Asset& myAsset, const Option& opt);
+    double get_price_explicit();
 
     // Implicit scheme for option pricing
     vector<double> implicit_scheme(const Asset& myAsset, const Option& opt);
+    double get_price_implicit();
 
     // Function to set boundaries for the option pricing grid
     void set_boundaries(double cur_spot, const Option& opt);
+
+    
 
     // Destructor
     ~Pricer();

@@ -66,6 +66,7 @@ void Pricer::calculate_Pu_Pm_Pd(const Option& opt, const Asset& myAsset, double&
     double dx = 2 * static_cast<double>(Bounds) / static_cast<double>(Nspace);
     double sig2 = pow(myAsset.get_vol(), 2);
     double drift = myAsset.get_rate() - sig2 / 2;
+
     pu = dt * (0.5 * sig2 / pow(dx, 2) + drift * 0.5 / dx);
     pd = dt * (sig2 * 0.5 / pow(dx, 2) - drift * 0.5 / dx);
     if (explicit_method) {
@@ -75,6 +76,7 @@ void Pricer::calculate_Pu_Pm_Pd(const Option& opt, const Asset& myAsset, double&
         pm = 1 + pu + pd;
     }
 }
+
 
 // Function to create the A matrix for the implicit scheme
 MatrixXd Pricer::implicit_create_A_matrix(double pu, double pm, double pd) const
@@ -125,7 +127,14 @@ vector<double> Pricer::explicit_scheme(const Asset& myAsset, const Option& opt)
         }
         u_previous = u_current;
     }
+    price_explicit = u_current[Nspace/2];
     return u_current;
+}
+
+double Pricer::get_price_explicit()
+{
+    cout << "Explicit price: " << price_explicit <<" $" << endl;
+    return price_explicit;
 }
 
 // Implicit scheme for option pricing
@@ -166,12 +175,21 @@ vector<double> Pricer::implicit_scheme(const Asset& myAsset, const Option& opt)
     }
     
     // Extract the first column (column with index 0)
-    Eigen::VectorXd columnVector = u_results.col(0);
+    VectorXd columnVector = u_results.col(0);
 
     // Convert Eigen column vector to std::vector
-    std::vector<double> final_result(columnVector.data(), columnVector.data() + columnVector.size());
+    vector<double> final_result(columnVector.data(), columnVector.data() + columnVector.size());
+
+    // fill price
+    price_implicit = columnVector[Nspace / 2];
     return final_result;
 
+}
+
+double Pricer::get_price_implicit()
+{
+    cout << "Implicit price: " << price_implicit << " $" << endl;
+    return price_implicit;
 }
 
 // Destructor

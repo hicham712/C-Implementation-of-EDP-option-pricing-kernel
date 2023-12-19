@@ -1,6 +1,7 @@
 #pragma once
+#pragma once
 #include <iostream>
-
+#include "Asset.h"
 // Base class representing a financial option
 class Option {
 protected:
@@ -25,7 +26,7 @@ public:
     virtual void print() const;
 
     // Virtual function to get the BS price of the option
-    virtual double BS_price(double S, double K, double T, double r, double sigma) const=0;
+    virtual double BS_price(const double spot, const Asset& myAsset) const = 0;
 
     // Pure virtual function to calculate the payoff, making Option an abstract class
     virtual double payoff(double spot) const = 0;
