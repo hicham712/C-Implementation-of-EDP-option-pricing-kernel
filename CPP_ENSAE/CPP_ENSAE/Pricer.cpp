@@ -12,7 +12,7 @@ Pricer::Pricer()
     this->Ntime = 100;
     this->Nspace = 100;
     this->Bounds = 2;
-    cout << "The Pricer object has been created" << endl;
+    //cout << "The Pricer object has been created" << endl;
 }
 
 // Parameterized constructor
@@ -21,7 +21,7 @@ Pricer::Pricer(int Ntime, int Nspace, int Bounds)
     this->Ntime = Ntime;
     this->Nspace = Nspace;
     this->Bounds = Bounds;
-    cout << "The Pricer object has been created" << endl;
+    // cout << "The Pricer object has been created" << endl;
 }
 
 // Copy constructor
@@ -30,7 +30,7 @@ Pricer::Pricer(const Pricer& mypricer)
     this->Ntime = mypricer.Ntime;
     this->Nspace = mypricer.Nspace;
     this->Bounds = mypricer.Bounds;
-    cout << "The Pricer object has been created by copy" << endl;
+    // cout << "The Pricer object has been created by copy" << endl;
 }
 
 // Function to create a vector with specified parameters
@@ -108,6 +108,18 @@ void Pricer::set_boundaries(double cur_spot, const Option& opt)
 {
     u_current[0] = opt.payoff(cur_spot * exp(-Bounds));
     u_current[Nspace] = opt.payoff(cur_spot * exp(Bounds));
+}
+
+Pricer& Pricer::operator=(const Pricer& p1)
+
+{
+    if (this != &p1) {
+        // Use the copy constructor to perform member-wise copy
+        *this = Pricer(p1);
+    }
+
+    // Return a reference to the modified object
+    return *this;
 }
 
 // Explicit scheme for option pricing
@@ -195,5 +207,5 @@ double Pricer::get_price_implicit()
 // Destructor
 Pricer::~Pricer()
 {
-    cout << "The Pricer object has been deleted" << endl;
+    // cout << "The Pricer object has been deleted" << endl;
 }

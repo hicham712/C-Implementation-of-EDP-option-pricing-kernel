@@ -16,6 +16,7 @@ Option::Option(double strike, double maturity)
     this->strike = strike;
     this->maturity = maturity;
     std::cout << "The Option object has been created" << std::endl;
+    print();
 }
 
 // Copy constructor for the Option class

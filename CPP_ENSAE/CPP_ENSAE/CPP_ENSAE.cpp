@@ -27,25 +27,29 @@ void printTime(TimeVar t1) {
 
 void main_time_pricer_analysis()
 {
-    vector<float> timeVectorExplicit;
-    vector<float> timeVectorImplicit;
+    // Inputs
     int step = 100; // Variable que l'on peut modifier
     TimeVar tstart;
     TimeVar tstart2;
 
+    // Input for pricer
     int Nspace = 100;
     int Ntime = 100;
     int Bounds = 2;
+    int max_number = 15;
     vector<double> result_explicit;
     vector<double> result_implicit;
+    // Create classes
+    Asset myasset;
+    Call callOption;
 
-    for (int i = 2; i < 1501; i += step) {
+    vector<float> timeVectorExplicit;
+    vector<float> timeVectorImplicit;
 
-        Asset myasset(0.20, 0.02, 100);
-        Call callOption(100.0, 1.0);
+    for (int i = 2; i < (max_number* step) + 1; i += step) {
+
         // Creation des classes pricers
         Pricer myPricer(Ntime, Nspace, Bounds);
-
 
         //Function explicit
         tstart = timeNow();
@@ -73,27 +77,32 @@ void main_time_pricer_analysis()
 float average(std::vector<double> const& v) {
     return accumulate(v.begin(), v.end(), 0.0) / v.size();
 }
-void fill_BS_prices(int Nspace,Option& myOpt,const Asset myAsset,vector<double>& price_BS,vector<double>& spot_prices) {
+void fill_BS_prices(int Nspace,Option& myOpt,const Asset& myAsset,vector<double>& price_BS,vector<double>& spot_prices) {
     for (int i = 0;i < Nspace + 1;i++) {
         price_BS.push_back(myOpt.BS_price(myAsset.get_spot()*exp(spot_prices[i]), myAsset));
     }
 }
 
-void BS_VS_EDP(Asset myAsset, Option& myOpt) {
+void BS_VS_EDP(Asset& myAsset, Option& myOpt) {
+    // Inputs
     const int NumScenarios = 3;
     int Nspaces[NumScenarios] = { 100, 100, 400 };
     int Ntimes[NumScenarios] = { 100, 1600, 1600 };
     int Bounds = 2;
-
-    std::vector<Pricer> myPricers(NumScenarios);
-    std::vector<std::vector<double>> result_explicits(NumScenarios);
-    std::vector<std::vector<double>> result_implicits(NumScenarios);
-    std::vector<std::vector<double>> spot_prices(NumScenarios);
-    std::vector<std::vector<double>> prices_BS(NumScenarios);
+    
+    //create the pricers
+    Pricer pricer1(Ntimes[0], Nspaces[0], 2);
+    Pricer pricer2(Ntimes[1], Nspaces[1], 2);
+    Pricer pricer3(Ntimes[2], Nspaces[2], 2);
+    vector<Pricer> myPricers = { pricer1 , pricer2, pricer3 };
+    // for outputs
+    vector<vector<double>> result_explicits(NumScenarios);
+    vector<vector<double>> result_implicits(NumScenarios);
+    vector<vector<double>> spot_prices(NumScenarios);
+    vector<vector<double>> prices_BS(NumScenarios);
 
     // Loop through different scenarios
     for (int i = 0; i < NumScenarios; ++i) {
-        myPricers[i] = Pricer(Ntimes[i], Nspaces[i], 2);
 
         // Calculate explicit and implicit schemes
         result_explicits[i] = myPricers[i].explicit_scheme(myAsset, myOpt);
@@ -133,17 +142,19 @@ int main()
     std::vector<double> result_explicit_ = myPricer.explicit_scheme(myasset, callOption);
     std::vector<double> result_implicit = myPricer.implicit_scheme(myasset, callOption);
     myPricer.get_price_explicit();
-    cout << "Black and Scholes price: " << callOption.BS_price(myasset.get_spot(), myasset);
+    cout << "Black and Scholes price: " << callOption.BS_price(myasset.get_spot(), myasset) << endl;
 
     // Comparaison with B&S method
     bool test_accuracy = true;
     if (test_accuracy) {
+        cout << " -------- You have launched the comparaison between BS model and Explicit Scheme -------- " << endl;
         BS_VS_EDP(myasset, callOption);
     }
 
     // Time analysis
-    bool test_speed = false;
+    bool test_speed = true;
     if (test_speed) {
+        cout << " -------- You have launched the time analysis test --------" << endl;
         main_time_pricer_analysis();
     }
     return 0;

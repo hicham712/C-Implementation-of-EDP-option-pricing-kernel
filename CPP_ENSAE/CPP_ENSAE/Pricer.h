@@ -52,7 +52,8 @@ public:
     // Function to set boundaries for the option pricing grid
     void set_boundaries(double cur_spot, const Option& opt);
 
-    
+    // Override the "=" operator
+    Pricer& operator=(const Pricer& p1);
 
     // Destructor
     ~Pricer();

@@ -7,7 +7,7 @@ Asset::Asset()
 {
     // Initialize with default values
     vol = 0.20;
-    rate = 0.05;
+    rate = 0.0;
     spot = 100;
 
     cout << "The Asset object has been created" << endl;
